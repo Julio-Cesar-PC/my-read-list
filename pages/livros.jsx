@@ -14,7 +14,6 @@ function Livros() {
   function search(e) {
     e.preventDefault()
     let req = `https://www.googleapis.com/books/v1/volumes?q=${document.getElementById('search').value}}`
-    console.log('searching for: ' + req)
     axios.get(req)
     .then(response => {
       // console.log(response.data)
