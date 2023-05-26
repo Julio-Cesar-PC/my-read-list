@@ -1,16 +1,16 @@
 import Layout from "../components/layout"
 import BookList from "../components/BookList"
 import { useSession } from "next-auth/react"
-import { useState } from "react"
+import React, { useState } from "react"
 import axios from "axios"
 
 export default function IndexPage() {
   const [books, setBooks] = useState([])
-  const { data: session, status } = useSession()
+  
 
-  function handleSearch(e: any) {
+  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    let req = `https://www.googleapis.com/books/v1/volumes?q=${document.getElementById('search').value}}`
+    let req = `https://www.googleapis.com/books/v1/volumes?q=${document.getElementById('search')?.value}}`
     axios.get(req)
     .then(response => {
       console.log(response.data)
