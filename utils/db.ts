@@ -10,7 +10,6 @@ interface Livro {
 
 function createLivro (livro: Livro) {
   const prisma = new PrismaClient()
-  prisma.$connect()
   const result = prisma.livros.create({
     data: {
       titulo: livro.nome,
@@ -20,6 +19,8 @@ function createLivro (livro: Livro) {
       paginas: livro.paginas
     }
   })
+  prisma.$disconnect()
+  return result
 }
 
 export { createLivro }
