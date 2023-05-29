@@ -56,15 +56,18 @@ model VerificationToken {
 }
 
 model Livros {
-  id        String   @id @default(cuid())
-  titulo    String
-  autor     String
-  editora   String
-  ano       Int
-  paginas   Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  livrosUser LivrosUser[]
+  id              String   @id @default(cuid())
+  googleId        String   @unique
+  titulo          String
+  autor           String
+  editora         String
+  dataPublicacao  DateTime @db.Date
+  paginas         Int
+  imageLink       String
+  selfLink        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  livrosUser      LivrosUser[]
 }
 
 model LivrosUser {
