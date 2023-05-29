@@ -42,13 +42,13 @@ export default function Example() {
                     alt="Your Company"
                   />
                   <img
-                    className="hidden h-16 w-auto lg:block"
+                    className="hidden h-16 w-auto lg:block mr-3"
                     src="logo.png"
                     alt="Your Company"
                   />
-                  <h3 className="hidden h-12 w-auto lg:block text-white">My Read List</h3>
+                  <h3 className="hidden h-12 mt-4 w-auto lg:block text-white">My Read List</h3>
                 </div>
-                <div className="hidden sm:ml-6 sm:block">
+                <div className="hidden sm:ml-6 sm:block mt-3">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
                       <a
