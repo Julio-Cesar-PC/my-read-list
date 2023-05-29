@@ -1,10 +1,8 @@
 import Layout from "../components/layout"
-import { useSession } from "next-auth/react"
-import MenuItems from "../components/menuItems"
+import MenuItems from "../components/MenuItems"
 import { useState } from "react"
 
 export default function IndexPage() {
-  const { data: session, status } = useSession()
   const [books, setBooks] = useState([]);
 
   return (

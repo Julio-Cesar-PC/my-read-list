@@ -6,8 +6,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
-  { name: 'Livros', href: '/livros', current: false },
-  { name: 'Minha Lista', href: '/minha-lista', current: false },
+  { name: 'Livros', href: '/livros', current: true },
+  { name: 'Minha Lista', href: '/minha-lista', current: true },
 ]
 
 function classNames(...classes : any[]) {
