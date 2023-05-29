@@ -7,7 +7,7 @@ export default function IndexPage() {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <h1>NextAuth.js Example</h1>
+        <h1>BEM VINDO!</h1>
         <h2>{`Hello ${session?.user?.name}`}</h2>
       </div>
     </Layout>
