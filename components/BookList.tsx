@@ -24,7 +24,6 @@ function BookList({ books }: any) {
   async function sendReview(book: any) {
     // verifica se o livro já existe no banco de dados
     let result = await axios.get("http://localhost:3000/api/livros/getLivroByGID", { params: { googleId: book.id }})
-    console.log(book)
     if (result.data == null) {
       // console.log('livro não existe no banco de dados')
       // criar um objeto com as informações do livro e enviar para o backend
