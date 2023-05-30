@@ -7,7 +7,6 @@ export default async function handler(
 ) {
     try {
         const prisma = new PrismaClient()
-        console.log(req.body)
         const result = await prisma.livrosUser.create({
             data: {
                 userId: req.body.userId,

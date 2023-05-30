@@ -12,10 +12,8 @@ export default function IndexPage() {
     let req = `https://www.googleapis.com/books/v1/volumes?q=${document.getElementById('search')?.value}}`
     axios.get(req)
     .then(response => {
-      console.log(response.data)
       setBooks(response.data.items)
     })
-    console.log("Pesquisando...")
   }
 
   return (

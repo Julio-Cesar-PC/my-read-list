@@ -15,8 +15,6 @@ export default function IndexPage() {
       let userId = response.data.id
       axios.get("http://localhost:3000/api/avaliacao/getAllAvaliacaoByUserId", { params: { userId: userId }})
       .then(response => {
-        console.log("Avaliações do usuário: ")
-        console.log(response.data)
         setBooksList(response.data)
       })
     })

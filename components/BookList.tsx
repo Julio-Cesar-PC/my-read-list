@@ -24,24 +24,24 @@ function BookList({ books }: any) {
   async function sendReview(book: any) {
     // verifica se o livro já existe no banco de dados
     let result = await axios.get("http://localhost:3000/api/livros/getLivroByGID", { params: { googleId: book.id }})
-    if (!result.data) {
-      console.log('livro não existe no banco de dados')
+    console.log(book)
+    if (result.data == null) {
+      // console.log('livro não existe no banco de dados')
       // criar um objeto com as informações do livro e enviar para o backend
       const livro = {
         googleId: book.id,
-        titulo: book.volumeInfo.title,
-        autor: book.volumeInfo.authors[0],
-        editora: book.volumeInfo.publisher,
-        dataPublicacao: book.volumeInfo.publishedDate,
-        paginas: book.volumeInfo.pageCount,
-        imageLink: book.volumeInfo.imageLinks.thumbnail,
+        titulo: book.volumeInfo.title || "Não informado",
+        autor: book.volumeInfo.authors[0] || "Não informado",
+        editora: book.volumeInfo.publisher || "Não informado",
+        dataPublicacao: book.volumeInfo.publishedDate || "2000-01-01",
+        paginas: book.volumeInfo.pageCount || 0,
+        imageLink: book.volumeInfo.imageLinks?.thumbnail || "book-placeholder.jpg",
         selfLink: book.selfLink,
       }
 
       // enviar o objeto para o backend
       axios.post("http://localhost:3000/api/livros/createLivro", livro)
       .then(response => {
-        let reviewBook = response.data
       })
     }
     
@@ -53,7 +53,6 @@ function BookList({ books }: any) {
     axios.get("http://localhost:3000/api/auth/getUserByEmail", { params: { email:  session?.user?.email }})
     .then(async response => {
       let reviewBook = await axios.get("http://localhost:3000/api/livros/getLivroByGID", { params: { googleId: book.id }})
-      console.log(reviewBook.data)
       let userId = response.data.id
       let avaliacao = {
         userId: userId,
@@ -64,7 +63,6 @@ function BookList({ books }: any) {
       }
       axios.post("http://localhost:3000/api/avaliacao/createAvaliacao", avaliacao)
       .then(response => {
-        console.log(response.data)
       })
     })
   }

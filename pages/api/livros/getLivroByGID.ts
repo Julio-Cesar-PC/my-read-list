@@ -7,7 +7,6 @@ export default async function handler(
 ) {
     try {
         const prisma = new PrismaClient();
-        console.log(req);
         const result = await prisma.livros.findFirst({
             where: {
                 googleId: req.query.googleId,
