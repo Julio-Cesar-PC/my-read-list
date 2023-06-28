@@ -71,6 +71,13 @@ function Login() {
                 >
                   Github
                 </button>
+                <button
+                  type="button"
+                  onClick={() => signIn("google")}
+                  className="transition duration-200 border border-gray-200 text-gray-500 w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-normal text-center inline-block"
+                >
+                  Google
+                </button>
               </div>
             </div>
             <div className="py-5">

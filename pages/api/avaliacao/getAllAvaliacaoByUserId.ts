@@ -1,18 +1,32 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
+import { getServerSession } from "next-auth"
+import { authOptions } from "../auth/[...nextauth]"
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    const session = await getServerSession(req, res, authOptions)
     try {
         const prisma = new PrismaClient()
+        if (req.method !== 'GET') {
+            throw new Error(
+                `The HTTP ${req.method} method is not supported at this route.`
+            )
+        }
+        const user = await prisma.user.findFirst({
+            where: {
+                email: session.user.email,
+            }
+        })
+
         const result = await prisma.livrosUser.findMany({
             include: {
                 Livros: true,
             },
             where: {
-                userId: req.query.userId,
+                userId: user.id,
             }
         })
         prisma.$disconnect()

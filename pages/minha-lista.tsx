@@ -9,13 +9,9 @@ export default function IndexPage() {
   const { data: session } = useSession();
 
   useEffect(()=>{
-    axios.get("/api/auth/getUserByEmail", { params: { email: session?.user?.email }})
+    axios.get("/api/avaliacao/getAllAvaliacaoByUserId")
     .then(response => {
-      let userId = response.data.id
-      axios.get("/api/avaliacao/getAllAvaliacaoByUserId", { params: { userId: userId }})
-      .then(response => {
-        setBooksList(response.data)
-      })
+      setBooksList(response.data)
     })
   },[session])
 

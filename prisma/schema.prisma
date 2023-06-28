@@ -44,6 +44,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   livrosUser    LivrosUser[]
+  following     Follows[]  @relation("follower")
+  followers     Follows[]  @relation("following")
 }
 
 model VerificationToken {
@@ -81,4 +83,13 @@ model LivrosUser {
 
   User  User    @relation(fields: [userId], references: [id])
   Livros Livros @relation(fields: [livroId], references: [id])
+}
+
+model Follows {
+  follower User @relation("follower", fields: [followerId], references: [id])
+  followerId String
+  following User @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId]) // composite id
 }

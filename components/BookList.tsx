@@ -10,6 +10,7 @@ function BookList({ books }: any) {
   const [stars, setStars] = useState()
   const [status, setStatus] = useState("")
   const [pages, setPages] = useState(0)
+  const [btnAddList, setBtnAddList] = useState(false)
   const { data: session } = useSession();
   
   const toggleModal = () => {
@@ -21,13 +22,13 @@ function BookList({ books }: any) {
     toggleModal()
   }
 
-  async function sendReview(book: any) {
+  async function verificaSeLivroExiste(book: any) {
     // verifica se o livro já existe no banco de dados
-    let result = await axios.get(process.env.NEXTAUTH_URL + "/api/livros/getLivroByGID", { params: { googleId: book.id }})
+    let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }})
     if (result.data == null) {
       // console.log('livro não existe no banco de dados')
       // criar um objeto com as informações do livro e enviar para o backend
-      const livro = {
+      let livro = {
         googleId: book.id,
         titulo: book.volumeInfo.title || "Não informado",
         autor: book.volumeInfo.authors[0] || "Não informado",
@@ -36,22 +37,25 @@ function BookList({ books }: any) {
         paginas: book.volumeInfo.pageCount || 0,
         imageLink: book.volumeInfo.imageLinks?.thumbnail || "book-placeholder.jpg",
         selfLink: book.selfLink,
-      }
-
+      }      
       // enviar o objeto para o backend
-      axios.post(process.env.NEXTAUTH_URL + "/api/livros/createLivro", livro)
-      .then(response => {
-      })
+      await axios.post("/api/livros/createLivro", livro)
     }
+  }
+
+
+  async function sendReview(book: any, e: any) {
+    setBtnAddList(true)
+    verificaSeLivroExiste(book)
     
     // verifica se o usuário já avaliou o livro
     let nota = (document.getElementById('stars') as HTMLInputElement).value;
     let status = (document.getElementById('status') as HTMLInputElement).value;
     let paginasLidas = (document.getElementById('paginasLidas') as HTMLInputElement).value;
 
-    axios.get(process.env.NEXTAUTH_URL + "/api/auth/getUserByEmail", { params: { email:  session?.user?.email }})
+    axios.get("/api/auth/getUserByEmail", { params: { email:  session?.user?.email }})
     .then(async response => {
-      let reviewBook = await axios.get(process.env.NEXTAUTH_URL + "/api/livros/getLivroByGID", { params: { googleId: book.id }})
+      let reviewBook = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }})
       let userId = response.data.id
       let avaliacao = {
         userId: userId,
@@ -60,9 +64,12 @@ function BookList({ books }: any) {
         status: status,
         paginasLidas: Number(paginasLidas)
       }
-      axios.post(process.env.NEXTAUTH_URL + "/api/avaliacao/createAvaliacao", avaliacao)
+      axios.post("/api/avaliacao/createAvaliacao", avaliacao)
       .then(response => {
+        setIsOpen(false)
+        setBtnAddList(false)
       })
+
     })
   }
 
@@ -100,8 +107,8 @@ function BookList({ books }: any) {
             <div className="flex flex-col gap-2 w-2/3">
             <form>
               <label className="block mb-2 text-sm font-medium">Nota:</label>
-              <select defaultValue="0" id="stars" className="select max-w-xs mt-4 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                <option value="0" disabled>Escolha a Nota</option>
+              <select id="stars" className="select max-w-xs mt-4 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                <option disabled>Escolha a Nota</option>
                 <option value="1">1 estrela</option>
                 <option value="2">2 estrelas</option>
                 <option value="3">3 estrelas</option>
@@ -110,8 +117,8 @@ function BookList({ books }: any) {
               </select>
 
               <label className="block mb-2 text-sm font-medium">Status:</label>
-              <select defaultValue="0" id="status" className="select max-w-xs mt-4borderb text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                <option value="0" disabled>Escolha o Status</option>
+              <select  id="status" className="select max-w-xs mt-4borderb text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                <option disabled>Escolha o Status</option>
                 <option value="Quero Ler">Quero Ler</option>
                 <option value="Lendo">Lendo</option>
                 <option value="Finalizado">Finalizado</option>
@@ -120,10 +127,15 @@ function BookList({ books }: any) {
               
               <div className="max-w-xs mt-4">
                 <label className="block mb-2 text-sm font-medium">Nº de paginas lidas:</label>
-                <input type="number" max={bookModal?.volumeInfo?.pageCount} id="paginasLidas" className="input block w-full p-2border border-gray-300 rounded-lg sm:text-xs focus:ring-blue-500 focus:border-blue-500 "/>
+                <input 
+                  type="number" 
+                  max={bookModal?.volumeInfo?.pageCount}
+                  id="paginasLidas" 
+                  placeholder={"0/" + bookModal?.volumeInfo?.pageCount}
+                  className="input block w-full p-2border border-gray-300 rounded-lg sm:text-xs focus:ring-blue-500 focus:border-blue-500 "/>
               </div>
               <div className="flex justify-left p-2">
-                <Button id="review-btn" onClick={() => sendReview(bookModal)} className="bg-primary hover:bg-gray-400">Adicionar a Minha Lista</Button>
+                <Button disabled={btnAddList} id="review-btn" onClick={(e) => sendReview(bookModal, e)} className="bg-primary hover:bg-gray-400">Adicionar a Minha Lista</Button>
               </div>
             </form>
 
