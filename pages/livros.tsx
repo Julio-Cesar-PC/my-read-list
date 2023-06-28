@@ -9,7 +9,7 @@ export default function IndexPage() {
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    let req = `https://www.googleapis.com/books/v1/volumes?q=${document.getElementById('search')?.value}}`
+    let req = `https://www.googleapis.com/books/v1/volumes?q=${(document.getElementById('search') as HTMLInputElement).value}}`
     axios.get(req)
     .then(response => {
       setBooks(response.data.items)

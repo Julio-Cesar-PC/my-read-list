@@ -1,8 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaMoon, FaSun } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from 'next/link';
+import SwitchTheme from './SwitchTheme';
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
@@ -51,7 +53,7 @@ export default function Example() {
                 <div className="hidden sm:ml-6 sm:block mt-3">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
@@ -61,7 +63,7 @@ export default function Example() {
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -69,7 +71,9 @@ export default function Example() {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
+                {/* Check if logged */}
+                {session ? (
+                  <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
@@ -91,27 +95,17 @@ export default function Example() {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <a
+                          <Link
                             href="/me"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Your Profile
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
+                          <Link
                             href="/login"
                             onClick={() => { signOut({
                               callbackUrl: `${window.location.origin}/login`
@@ -119,12 +113,20 @@ export default function Example() {
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
                 </Menu>
+                ) : (
+                  <Link href="/login" className="text-white bg-primaryDark hover:bg-primaryLight hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Login
+                  </Link>
+                )}
+                {/* Ebable Dark Mode */}
+                <SwitchTheme />
+                
               </div>
             </div>
           </div>

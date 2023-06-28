@@ -9,11 +9,10 @@ export default function IndexPage() {
   const { data: session } = useSession();
 
   useEffect(()=>{
-    let req = `http://localhost:3000/api/auth/getUserByEmail`
-    axios.get(req, { params: { email: session?.user?.email }})
+    axios.get("/api/auth/getUserByEmail", { params: { email: session?.user?.email }})
     .then(response => {
       let userId = response.data.id
-      axios.get("http://localhost:3000/api/avaliacao/getAllAvaliacaoByUserId", { params: { userId: userId }})
+      axios.get("/api/avaliacao/getAllAvaliacaoByUserId", { params: { userId: userId }})
       .then(response => {
         setBooksList(response.data)
       })
@@ -22,10 +21,10 @@ export default function IndexPage() {
 
   return (
     <Layout>
-      <div className="flex flex-col  min-h-screen py-2"> 
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <div className="flex flex-col min-h-screen py-2"> 
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg flex justify-center">
+          <table className="text-sm text-left text-gray-500 mt-5">
+              <thead className="text-xs uppercase">
                 <tr>
                   <th scope="col" className="px-6 py-3">
                     Capa
