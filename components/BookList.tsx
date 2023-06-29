@@ -46,7 +46,7 @@ function BookList({ books }: any) {
 
   async function sendReview(book: any, e: any) {
     setBtnAddList(true)
-    verificaSeLivroExiste(book)
+    await verificaSeLivroExiste(book)
     
     // verifica se o usuário já avaliou o livro
     let nota = (document.getElementById('stars') as HTMLInputElement).value;
