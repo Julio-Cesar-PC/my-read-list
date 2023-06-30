@@ -9,7 +9,7 @@ export default function IndexPage() {
   const { data: session } = useSession();
 
   useEffect(()=>{
-    axios.get("/api/avaliacao/getAllAvaliacaoByUserId")
+    axios.get("/api/avaliacao/getAllAvaliacaoBySession")
     .then(response => {
       setBooksList(response.data)
     })

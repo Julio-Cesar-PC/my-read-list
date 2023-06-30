@@ -8,30 +8,36 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const session = await getServerSession(req, res, authOptions)
+    const prisma = new PrismaClient()
     try {
-        const prisma = new PrismaClient()
         if (req.method !== 'GET') {
             throw new Error(
                 `The HTTP ${req.method} method is not supported at this route.`
             )
         }
-        const user = await prisma.user.findFirst({
-            where: {
-                email: session.user.email,
-            }
-        })
+        if (session?.user?.email) {
+            const user = await prisma.user.findFirst({
+                where: {
+                    email: session.user.email,
+                }
+            })
 
-        const result = await prisma.livrosUser.findMany({
-            include: {
-                Livros: true,
-            },
-            where: {
-                userId: user.id,
+            if (user) {
+                const result = await prisma.follows.findMany({
+                    select: {
+                        following: true,
+                    },
+                    where: {
+                        followerId: user.id,
+                    }
+                })
+                prisma.$disconnect()
+                res.status(200).json(result)
             }
-        })
-        prisma.$disconnect()
-        res.status(200).json(result)
+        }
+        
     } catch (error) {
+        prisma.$disconnect()
         res.status(500).json({ error: 'Oops! Something went wrong.' + error })
     }
 }

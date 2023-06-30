@@ -6,10 +6,6 @@ import { useSession } from "next-auth/react";
 function BookList({ books }: any) {
   const [isOpen, setIsOpen] = useState(false)
   const [bookModal, setBookModal] = useState({} as any)
-  const [currentStars, setCurrentStars] = useState(0)
-  const [stars, setStars] = useState()
-  const [status, setStatus] = useState("")
-  const [pages, setPages] = useState(0)
   const [btnAddList, setBtnAddList] = useState(false)
   const { data: session } = useSession();
   
@@ -26,7 +22,6 @@ function BookList({ books }: any) {
     // verifica se o livro já existe no banco de dados
     let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }})
     if (result.data == null) {
-      // console.log('livro não existe no banco de dados')
       // criar um objeto com as informações do livro e enviar para o backend
       let livro = {
         googleId: book.id,
@@ -48,7 +43,6 @@ function BookList({ books }: any) {
     setBtnAddList(true)
     await verificaSeLivroExiste(book)
     
-    // verifica se o usuário já avaliou o livro
     let nota = (document.getElementById('stars') as HTMLInputElement).value;
     let status = (document.getElementById('status') as HTMLInputElement).value;
     let paginasLidas = (document.getElementById('paginasLidas') as HTMLInputElement).value;

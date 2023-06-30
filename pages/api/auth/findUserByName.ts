@@ -7,18 +7,20 @@ export default async function handler(
 ) {
     const prisma = new PrismaClient();
     try {
-        if (req.query.email !== undefined && req.query.email !== null && req.query.email !== '') {
-            const result = await prisma.user.findFirst({
+        if (req.query.name !== undefined && req.query.name !== null && req.query.name !== '') {
+            const result = await prisma.user.findMany({
                 where: {
-                    email: req.query.email.toString(),
+                    name: {
+                        contains: req.query.name.toString(),
+                        mode: 'insensitive'
+                    }
                 }
             });
             prisma.$disconnect();
             res.status(200).json(result);
-
         } else {
             prisma.$disconnect();
-            res.status(400).json({ error: 'Missing email' });
+            res.status(400).json({ error: 'Missing name' });
         }
     } catch (error) {
         prisma.$disconnect();
