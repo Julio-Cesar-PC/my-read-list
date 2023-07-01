@@ -10,8 +10,10 @@ export default async function handler(
     const session = await getServerSession(req, res, authOptions)
     const prisma = new PrismaClient()
     try {
-        if (req.method !== 'GET') {
-            throw new Error(`The HTTP ${req.method} method is not supported at this route.`)
+        if (req.method !== 'DELETE') {
+            throw new Error(
+                `The HTTP ${req.method} method is not supported at this route.`
+            )
         }
         if (session?.user?.email) {
             const user = await prisma.user.findFirst({
@@ -19,25 +21,22 @@ export default async function handler(
                     email: session.user.email,
                 }
             })
-
-            if (user) {
-                const result = await prisma.follows.findMany({
-                    select: {
-                        follower: true,
-                    },
+            if (user?.id === req.query.id) {
+                prisma.$disconnect()
+                res.status(303).json({ error: 'You cannot follow yourself' })
+            } else if (user) {
+                const result = await prisma.follows.deleteMany({
                     where: {
-                        followingId: user.id,
+                        followerId: user.id,
+                        followingId: req.query.id as string
                     }
                 })
                 prisma.$disconnect()
-                res.status(200).json(result)
-            } else {
-                prisma.$disconnect()
-                res.status(400).json({ error: 'User not found' })
+                res.status(200).json({ message: `Unfollowed ${req.query.id}`})
             }
         } else {
             prisma.$disconnect()
-            res.status(400).json({ error: 'Session not found' })
+            res.status(400).json({ error: 'User not found' })
         }
         
     } catch (error) {

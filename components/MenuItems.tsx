@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Modal, Button } from "flowbite-react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function MenuItems({ booksList }: any) {
   const [openModalEdit, setOpenModalEdit] = useState<string | undefined>();
@@ -41,10 +42,16 @@ function MenuItems({ booksList }: any) {
       window.location.reload()
     })
     .catch(err => {
-      alert("Erro ao atualizar a avaliação")
-      setbtnSaveList(false)
-      toggleModalEdit(book)
-      window.location.reload()
+      Swal.fire({
+        title: "Erro!",
+        text: "Erro ao editar a avaliação!",
+        icon: "error",
+        confirmButtonText: "Ok",
+      }).then(() => {;
+        setbtnSaveList(false)
+        toggleModalEdit(book)
+        window.location.reload()
+      })
     })
   }
 
@@ -56,12 +63,23 @@ function MenuItems({ booksList }: any) {
       window.location.reload()
     })
     .catch(err => {
-      alert("Erro ao deletar a avaliação")
+      Swal.fire({
+        title: "Erro!",
+        text: "Erro ao deletar a avaliação!",
+        icon: "error",
+        confirmButtonText: "Ok",
+        timer: 2000
+      })
       toggleModalDelete(book)
       window.location.reload()
     })
     toggleModalDelete(book)
   }
+
+  function handleInputChange(e: any,name: string, value: string) {
+    setFormData((s) => ({ ...s, [name]: Number(value) }))
+  }
+    
 
   return (
     booksList.map((book: any) => (
@@ -84,12 +102,14 @@ function MenuItems({ booksList }: any) {
         <td className="px-6 py-4 text-right">
           <button className="mx-2 btn btn-warning" onClick={() => toggleModalEdit(book)}><FaEdit /></button>
           <button className="btn btn-error" onClick={() => toggleModalDelete(book)}><FaTrash /></button>
-          <Modal show={props.openModalEdit === 'form-elements'} popup onClose={() => props.setOpenModalEdit(undefined)}>
+          <Modal key={bookModal?.Livros?.id} show={props.openModalEdit === 'form-elements'} popup onClose={() => props.setOpenModalEdit(undefined)}>
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col gap-2 p-2">
-                <h1 className="text-2xl font-bold">{bookModal?.Livros?.titulo}</h1>
-                <p className="text-lg">{bookModal?.Livros?.autor}</p>
-              </div>
+              <Modal.Header>
+                <div className="flex flex-col gap-2 p-2">
+                  <h1 className="text-2xl font-bold">{bookModal?.Livros?.titulo}</h1>
+                  <p className="text-lg">{bookModal?.Livros?.autor}</p>
+                </div>
+              </Modal.Header>
               <div className="flex flex-row gap-2">
                 <img className="w-1/3 h-1/3 p-2" src={bookModal?.Livros?.imageLink || "book-placeholder.jpg"} alt="capa do livro" />
                 <div className="flex flex-col gap-2 w-2/3">
@@ -122,16 +142,14 @@ function MenuItems({ booksList }: any) {
                     <div className="max-w-xs mt-4">
                       <label className="block mb-2 text-sm font-medium">Nº de paginas lidas:</label>
                       <input
+                        name="paginasLidas"
                         value={formData.paginasLidas}
-                        type="text"
+                        type="number"
                         max={bookModal?.Livros?.paginas}
                         id="paginasLidas"
                         placeholder={"0/" + bookModal?.Livros?.paginas}
                         className="input block w-full p-2border border-gray-300 rounded-lg sm:text-xs focus:ring-blue-500 focus:border-blue-500 " 
-                        onChange={(e) => {
-                          e.preventDefault;
-                          setFormData({ ...formData, paginasLidas: Number(e.target.value)})
-                        }}/>
+                        onChange={(e) => handleInputChange(e, e.target.name, e.target.value)}/>
                     </div>
                     <div className="flex justify-left p-2">
                       <Button disabled={btnSaveList} onClick={(e) => handleSaveBtn(e, bookModal)} id="review-btn" className="bg-primary hover:bg-gray-400">Salvar</Button>

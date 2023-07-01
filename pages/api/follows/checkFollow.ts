@@ -11,7 +11,9 @@ export default async function handler(
     const prisma = new PrismaClient()
     try {
         if (req.method !== 'GET') {
-            throw new Error(`The HTTP ${req.method} method is not supported at this route.`)
+            throw new Error(
+                `The HTTP ${req.method} method is not supported at this route.`
+            )
         }
         if (session?.user?.email) {
             const user = await prisma.user.findFirst({
@@ -19,25 +21,29 @@ export default async function handler(
                     email: session.user.email,
                 }
             })
-
-            if (user) {
-                const result = await prisma.follows.findMany({
+            if (user?.id === req.query.id) {
+                prisma.$disconnect()
+                res.status(303).json({ error: 'You cannot follow yourself' })
+            } else if (user) {
+                const result = await prisma.follows.findFirst({
                     select: {
-                        follower: true,
+                        following: true,
                     },
                     where: {
-                        followingId: user.id,
+                        followerId: user.id,
+                        followingId: req.query.id as string
                     }
                 })
                 prisma.$disconnect()
-                res.status(200).json(result)
-            } else {
-                prisma.$disconnect()
-                res.status(400).json({ error: 'User not found' })
+                if (result) {
+                    res.status(200).json({ following: true })
+                } else {
+                    res.status(204).json({ following: false })
+                }
             }
         } else {
             prisma.$disconnect()
-            res.status(400).json({ error: 'Session not found' })
+            res.status(400).json({ error: 'User not found' })
         }
         
     } catch (error) {

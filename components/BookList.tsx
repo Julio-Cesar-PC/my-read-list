@@ -2,6 +2,7 @@ import { Modal, Button, Rating } from "flowbite-react"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
 
 function BookList({ books }: any) {
   const [isOpen, setIsOpen] = useState(false)
@@ -61,7 +62,13 @@ function BookList({ books }: any) {
         setIsOpen(false)
         setBtnAddList(false)
       }).catch(error => {
-        console.log(error)
+        Swal.fire({
+          title: "Erro!",
+          text: "Você já avaliou este livro!",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
         setIsOpen(false)
         setBtnAddList(false)
       })
@@ -93,10 +100,12 @@ function BookList({ books }: any) {
       ))}
         <Modal show={isOpen} onClose={toggleModal} className="p-10 m-10">
           <div className="flex flex-col gap-2">
+          <Modal.Header>
             <div className="flex flex-col gap-2 p-2">
               <h1 className="text-2xl font-bold">{bookModal?.volumeInfo?.title}</h1>
               <p className="text-lg">{bookModal?.volumeInfo?.authors}</p>
             </div>
+          </Modal.Header>
            <div className="flex flex-row gap-2">
             <img className="w-1/3 h-1/3 p-2" src={bookModal?.volumeInfo?.imageLinks?.thumbnail || "book-placeholder.jpg"} alt="capa do livro" />
             <div className="flex flex-col gap-2 w-2/3">
