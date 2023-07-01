@@ -19,10 +19,10 @@ function BookList({ books }: any) {
   }
 
   async function verificaSeLivroExiste(book: any) {
-    // verifica se o livro já existe no banco de dados
-    let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }})
-    if (result.data == null) {
-      // criar um objeto com as informações do livro e enviar para o backend
+    let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }}).catch(error => {
+      console.log(error)
+    })
+    if (result?.data == null) {
       let livro = {
         googleId: book.id,
         titulo: book.volumeInfo.title || "Não informado",
@@ -33,11 +33,9 @@ function BookList({ books }: any) {
         imageLink: book.volumeInfo.imageLinks?.thumbnail || "book-placeholder.jpg",
         selfLink: book.selfLink,
       }      
-      // enviar o objeto para o backend
       await axios.post("/api/livros/createLivro", livro)
     }
   }
-
 
   async function sendReview(book: any, e: any) {
     setBtnAddList(true)
@@ -62,8 +60,11 @@ function BookList({ books }: any) {
       .then(response => {
         setIsOpen(false)
         setBtnAddList(false)
+      }).catch(error => {
+        console.log(error)
+        setIsOpen(false)
+        setBtnAddList(false)
       })
-
     })
   }
 

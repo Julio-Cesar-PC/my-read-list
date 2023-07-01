@@ -5,28 +5,23 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    if (req.method !== 'PATCH') {
+    if (req.method !== 'DELETE') {
         throw new Error(`The HTTP ${req.method} method is not supported at this route.`)
     }
     const prisma = new PrismaClient()
+    console.log(req.query.id)
     try {
-        if (req.body.id !== undefined && req.body.id !== null && req.body.id !== '') {
-            const result = await prisma.livrosUser.update({
+        if (req.query.id) {
+            const result = await prisma.livrosUser.delete({
                 where: {
-                    id: req.body.id,
-                },
-                data: {
-                    nota: req.body.nota,
-                    status: req.body.status,
-                    paginasLidas: req.body.paginasLidas,
-                    updatedAt: new Date(),
+                    id: req.query.id.toString(),
                 }
             })
             prisma.$disconnect()
-            res.status(200).json({ message: 'Avaliação modificada com sucesso!' })
+            res.status(200).json({ message: 'Avaliação deletada com sucesso!' })
         } else {
             prisma.$disconnect()
-            res.status(400).json({ error: 'Missing id' })
+            res.status(500).json({ error: 'Oops! Something went wrong.' })
         }
     } catch (error) {
         prisma.$disconnect()

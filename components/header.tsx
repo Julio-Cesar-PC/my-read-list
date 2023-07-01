@@ -1,8 +1,8 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { FaBars, FaMoon, FaSun } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from 'next/link';
 import SwitchTheme from './SwitchTheme';
 
@@ -152,5 +152,7 @@ export default function Example() {
         </>
       )}
     </Disclosure>
+
+    
   )
 }

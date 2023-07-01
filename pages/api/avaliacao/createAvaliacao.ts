@@ -10,17 +10,30 @@ export default async function handler(
     }
     const prisma = new PrismaClient()
     try {
-        const result = await prisma.livrosUser.create({
-            data: {
+        // verificando se o usuário já avaliou o livro
+        const avaliacao = await prisma.livrosUser.findFirst({
+            where: {
                 userId: req.body.userId,
-                livroId: req.body.livroId,
-                nota: req.body.nota,
-                status: req.body.status,
-                paginasLidas: req.body.paginasLidas,
+                livroId: req.body.livroId
             }
         })
-        prisma.$disconnect()
-        res.status(200).json({ message: 'Avaliação criada com sucesso!' })
+        console.log(avaliacao)
+        if (!avaliacao) {
+            const result = await prisma.livrosUser.create({
+                data: {
+                    userId: req.body.userId,
+                    livroId: req.body.livroId,
+                    nota: req.body.nota,
+                    status: req.body.status,
+                    paginasLidas: req.body.paginasLidas,
+                }
+            })
+            prisma.$disconnect()
+            res.status(200).json({ message: 'Avaliação criada com sucesso!' })
+        } else {
+            prisma.$disconnect()
+            res.status(302).json({ message: 'Você já avaliou esse livro!' })
+        }
     } catch (error) {
         prisma.$disconnect()
         res.status(500).json({ error: 'Oops! Something went wrong.' + error })

@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import { Modal, Button } from "flowbite-react";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import axios from "axios";
 
 function MenuItems({ booksList }: any) {
-  const [openModal, setOpenModal] = useState<string | undefined>();
-  const props = { openModal, setOpenModal };
+  const [openModalEdit, setOpenModalEdit] = useState<string | undefined>();
+  const [openModalDelete, setOpenModalDelete] = useState<string | undefined>();
+  const props = { openModalEdit, setOpenModalEdit, openModalDelete, setOpenModalDelete };
   const [bookModal, setBookModal] = useState<any>();
   const [formData , setFormData] = useState({
     id: 0,
-    nota: '',
+    nota: 0,
     status: "",
     paginasLidas: 0,
   })
@@ -18,17 +20,47 @@ function MenuItems({ booksList }: any) {
   const [paginasLidas, setPaginasLidas] = useState(0)
   const [btnSaveList, setbtnSaveList] = useState(false)
 
-  function toggleModal(book: any) {
-    setOpenModal(openModal === 'form-elements' ? undefined : 'form-elements');
+  function toggleModalEdit(book: any) {
+    setOpenModalEdit(openModalEdit === 'form-elements' ? undefined : 'form-elements');
     setBookModal(book);
     setFormData({ ...formData, id: book.id, nota: book.nota, status: book.status, paginasLidas: book.paginasLidas })
   }
 
+  function toggleModalDelete(book: any) {
+    setOpenModalDelete(openModalDelete === 'form-elements' ? undefined : 'form-elements');
+    setBookModal(book);
+  }
+
   function handleSaveBtn(e: any, book: any) {
     e.preventDefault()
-    // setbtnSaveList(true)
-    console.log(book)
+    setbtnSaveList(true)
+    axios.patch("/api/avaliacao/updateAvaliacao", formData)
+    .then(response => {
+      setbtnSaveList(false)
+      toggleModalEdit(book)
+      window.location.reload()
+    })
+    .catch(err => {
+      alert("Erro ao atualizar a avaliação")
+      setbtnSaveList(false)
+      toggleModalEdit(book)
+      window.location.reload()
+    })
+  }
 
+  function handleDeleteBtn(book: any) {
+    console.log(book.id)
+    axios.delete("/api/avaliacao/deleteAvaliacaoById", { params: { id: book.id } })
+    .then(response => {
+      toggleModalDelete(book)
+      window.location.reload()
+    })
+    .catch(err => {
+      alert("Erro ao deletar a avaliação")
+      toggleModalDelete(book)
+      window.location.reload()
+    })
+    toggleModalDelete(book)
   }
 
   return (
@@ -50,9 +82,9 @@ function MenuItems({ booksList }: any) {
           {book.paginasLidas} / {book.Livros.paginas}
         </td>
         <td className="px-6 py-4 text-right">
-          <button className="mx-2 btn btn-warning" onClick={() => toggleModal(book)}><FaEdit /></button>
-          <button className="btn btn-error"><FaTrash /></button>
-          <Modal show={props.openModal === 'form-elements'} popup onClose={() => props.setOpenModal(undefined)}>
+          <button className="mx-2 btn btn-warning" onClick={() => toggleModalEdit(book)}><FaEdit /></button>
+          <button className="btn btn-error" onClick={() => toggleModalDelete(book)}><FaTrash /></button>
+          <Modal show={props.openModalEdit === 'form-elements'} popup onClose={() => props.setOpenModalEdit(undefined)}>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-2 p-2">
                 <h1 className="text-2xl font-bold">{bookModal?.Livros?.titulo}</h1>
@@ -110,9 +142,22 @@ function MenuItems({ booksList }: any) {
                 </div>
               </div>
               <div className="flex justify-center p-2">
-                <Button onClick={toggleModal} className="w-1/5 bg-primary hover:bg-gray-400">Fechar</Button>
+                <Button onClick={toggleModalEdit} className="w-1/5 bg-primary hover:bg-gray-400">Fechar</Button>
               </div>
             </div>
+          </Modal>
+
+          <Modal show={props.openModalDelete === 'form-elements'} popup onClose={() => props.setOpenModalDelete(undefined)}>
+            <Modal.Header>
+              Deletar Livro {bookModal?.Livros?.titulo}
+            </Modal.Header>
+            <Modal.Body>
+              <p>Tem certeza que deseja deletar o livro {bookModal?.Livros?.titulo}?</p>
+            </Modal.Body>
+            <Modal.Footer className='flex justify-end'>
+              <button onClick={toggleModalDelete} className="btn">Cancelar</button>
+              <button onClick={() => handleDeleteBtn(bookModal)} className="btn btn-error">Deletar</button>
+            </Modal.Footer>
           </Modal>
         </td>
       </tr>

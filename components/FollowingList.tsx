@@ -1,4 +1,5 @@
 export default function followingsList({followings}: any) {
+  if (followings != undefined) {
     return (
         followings.map((following: any) => (
           <a
@@ -15,4 +16,7 @@ export default function followingsList({followings}: any) {
         </a>
         ))
     )
+  } else {
+    return(<></>)
+  }
 }

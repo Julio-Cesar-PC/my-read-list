@@ -33,6 +33,9 @@ export default async function handler(
                 })
                 prisma.$disconnect()
                 res.status(200).json(result)
+            } else {
+                prisma.$disconnect()
+                res.status(400).json({ error: 'User not found' })
             }
         }
     } catch (error) {

@@ -6,8 +6,8 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    const prisma = new PrismaClient()
     try {
-        const prisma = new PrismaClient()
         const result = await prisma.livros.create({
             data: {
                 googleId: req.body.googleId,
@@ -23,6 +23,7 @@ export default async function handler(
         prisma.$disconnect()
         res.status(200).json({ message: 'Livro criado com sucesso!' })
     } catch (error) {
+        prisma.$disconnect()
         res.status(500).json({ error: 'Oops! Something went wrong.' + error })
     }
 }

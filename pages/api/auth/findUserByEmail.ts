@@ -7,17 +7,20 @@ export default async function handler(
 ) {
     const prisma = new PrismaClient();
     try {
-        if (req.query.googleId) {
-            const result = await prisma.livros.findFirst({
+        if (req.query.email !== undefined && req.query.email !== null && req.query.email !== '') {
+            const result = await prisma.user.findMany({
                 where: {
-                    googleId: req.query.googleId.toString(),
+                    email: {
+                        contains: req.query.email.toString(),
+                        mode: 'insensitive'
+                    }
                 }
             });
             prisma.$disconnect();
             res.status(200).json(result);
         } else {
             prisma.$disconnect();
-            res.status(400).json({ error: 'GoogleId not found' });
+            res.status(400).json({ error: 'Missing email' });
         }
     } catch (error) {
         prisma.$disconnect();
