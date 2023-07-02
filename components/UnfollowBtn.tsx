@@ -4,7 +4,7 @@ import { Button } from "flowbite-react";
 
 export default function FollowBtn({ id }: any ) {
     function handleFollow(id: any) {
-        axios.delete("/api/follows/deleteFollow", { followingId: id })
+        axios.delete(`/api/follows/deleteFollow?id=${id}`)
         .then((response) => {
             Swal.fire({
                 title: "Sucesso!",

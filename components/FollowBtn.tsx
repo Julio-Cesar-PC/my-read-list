@@ -4,7 +4,10 @@ import { Button } from "flowbite-react";
 
 export default function FollowBtn({ id }: any ) {
     function handleFollow(id: any) {
-        axios.post("/api/follows/createFollow", { followingId: id })
+        const data = {
+            followingId: id,
+        };
+        axios.post("/api/follows/createFollow", data)
         .then((response) => {
             Swal.fire({
                 title: "Sucesso!",
