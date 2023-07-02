@@ -21,7 +21,7 @@ export default function IndexPage() {
       <div className="flex flex-col items-center min-h-screen py-2 mt-2">
         <form className="flex flex-col items-center w-full flex-1 px-20 text-center" onSubmit={handleSearch}>
           <label className="text-2xl">Pesquise por titulos</label>
-          <div className="flex gap-2 w-full">
+          <div className="mt-2 flex gap-2 w-full">
             <input id="search" className="border-gray-300 border-2 rounded-md w-full" placeholder="Pesquise por titulos ou autores..."></input>
             <button className="bg-primary text-white p-2 rounded-md hover:bg-primaryLight" type="submit">Pesquisar</button>
           </div>

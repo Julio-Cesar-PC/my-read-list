@@ -98,7 +98,7 @@ function BookList({ books }: any) {
           </div>
         </div>
       ))}
-        <Modal show={isOpen} onClose={toggleModal} className="p-10 m-10">
+        <Modal show={isOpen} onClose={toggleModal}>
           <div className="flex flex-col gap-2">
           <Modal.Header>
             <div className="flex flex-col gap-2 p-2">
