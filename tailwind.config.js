@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'bookshelf': "url('../public/bookshelf.jpg')",
+      },
       colors: {
         primary: "#1D3557",
         primaryLight: "#254672",
