@@ -1,10 +1,14 @@
-import { Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { FaBars } from "react-icons/fa";
 import { HiX } from "react-icons/hi";
 import { signOut, useSession } from "next-auth/react";
 import Link from 'next/link';
 import SwitchTheme from './SwitchTheme';
+import { Combobox } from '@headlessui/react';
+import { FaSearch } from 'react-icons/fa';
+import axios from 'axios';
+
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
@@ -18,6 +22,28 @@ function classNames(...classes : any[]) {
 
 export default function Example() {
   const { data: session } = useSession();
+  const [ users, setAllUsers ] = useState([] as any);
+  const [ selectedUser, setSelectedUser ] = useState<any>(users[0]);
+  const [query, setQuery] = useState('')
+
+  const filteredUsers =
+    query === ''
+      ? users
+      : users.filter((user) => {
+          return user.name.toLowerCase().includes(query.toLowerCase())
+        })
+
+  async function getUsers() {
+    await axios.get("/api/auth/getAllUsers")
+    .then((res) => {
+      setAllUsers(res.data);
+    });
+    
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, [session]);
 
   return (
     <Disclosure as="nav" className="bg-primary">
@@ -69,7 +95,31 @@ export default function Example() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <Combobox
+                    value={selectedUser}
+                    onChange={setSelectedUser}
+                    name="searchUsers">
+                  <Combobox.Input className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium" />
+                  <Combobox.Options className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium">
+                    {
+                      filteredUsers.map((user) => (
+                        <Combobox.Option key={user.id} value={user} className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium">
+                          <div className="flex items-center">
+                            <img
+                              className="h-8 w-8 rounded-full"
+                              src={ user.image || "user-profile-placeholder.jpg" }
+                            />
+                            <span className="ml-3 block font-normal truncate">
+                              {user.name}
+                            </span>
+                          </div>
+                        </Combobox.Option>
+                      ))
+                    }
+                  </Combobox.Options>
 
+                </Combobox>
+                  
                 {/* Profile dropdown */}
                 {/* Check if logged */}
                 {session ? (

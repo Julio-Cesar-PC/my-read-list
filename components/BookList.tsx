@@ -20,9 +20,7 @@ function BookList({ books }: any) {
   }
 
   async function verificaSeLivroExiste(book: any) {
-    let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }}).catch(error => {
-      console.log(error)
-    })
+    let result = await axios.get("/api/livros/getLivroByGID", { params: { googleId: book.id }}).catch(error => console.log(error))
     if (result?.data == null) {
       let livro = {
         googleId: book.id,

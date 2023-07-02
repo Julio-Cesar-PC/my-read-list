@@ -23,8 +23,9 @@ export default async function handler(
             })
             if (user?.id === req.query.id) {
                 prisma.$disconnect()
-                res.status(303).json({ error: 'You cannot follow yourself' })
+                res.status(303).json({ error: 'You cannot Unfollow yourself' })
             } else if (user) {
+                console.log('user', user)
                 const result = await prisma.follows.deleteMany({
                     where: {
                         followerId: user.id,

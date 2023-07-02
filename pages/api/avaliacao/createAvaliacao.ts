@@ -17,7 +17,6 @@ export default async function handler(
                 livroId: req.body.livroId
             }
         })
-        console.log(avaliacao)
         if (!avaliacao) {
             const result = await prisma.livrosUser.create({
                 data: {

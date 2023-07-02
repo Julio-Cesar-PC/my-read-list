@@ -9,7 +9,6 @@ export default async function handler(
         throw new Error(`The HTTP ${req.method} method is not supported at this route.`)
     }
     const prisma = new PrismaClient()
-    console.log(req.query.id)
     try {
         if (req.query.id) {
             const result = await prisma.livrosUser.delete({

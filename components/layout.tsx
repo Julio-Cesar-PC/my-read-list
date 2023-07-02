@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   if (session) {
     return (
-      <div className="flex flex-col justify-between h-screen">
+      <div className="flex flex-col justify-between">
         <Header />
         <main>{children}</main>
         <Footer />

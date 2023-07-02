@@ -56,7 +56,6 @@ function MenuItems({ booksList }: any) {
   }
 
   function handleDeleteBtn(book: any) {
-    console.log(book.id)
     axios.delete("/api/avaliacao/deleteAvaliacaoById", { params: { id: book.id } })
     .then(response => {
       toggleModalDelete(book)
