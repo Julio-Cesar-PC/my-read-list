@@ -94,7 +94,9 @@ export default function Page() {
               <h2 className="text-xl font-bold">Seguidores</h2>
             </Modal.Header>
             <Modal.Body>
-              <FollowersList followers={user?.followers} />
+              <div className="flex gap-2">
+                <FollowersList followers={user?.followers} />
+              </div>
             </Modal.Body>
           </Modal>
 
@@ -108,7 +110,9 @@ export default function Page() {
               <h2 className="text-xl font-bold">Seguindo</h2>
             </Modal.Header>
             <Modal.Body>
-              <FollowingList followings={user?.following} />
+              <div className="flex gap-2">
+                <FollowingList followings={user?.following} />
+              </div>
             </Modal.Body>
           </Modal>
           </div>

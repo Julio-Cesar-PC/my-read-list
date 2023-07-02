@@ -77,7 +77,9 @@ export default function MePage() {
               <h2 className="text-xl font-bold">Seguidores</h2>
             </Modal.Header>
             <Modal.Body>
-              <FollowersList followers={followers} />
+              <div className="flex gap-2">
+                <FollowersList followers={followers} />
+              </div>
             </Modal.Body>
           </Modal>
 
@@ -91,7 +93,9 @@ export default function MePage() {
               <h2 className="text-xl font-bold">Seguindo</h2>
             </Modal.Header>
             <Modal.Body>
-              <FollowingList followings={following} />
+              <div className="flex gap-2">
+                <FollowingList followings={following} />
+              </div>
             </Modal.Body>
           </Modal>
         </div>

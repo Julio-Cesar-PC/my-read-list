@@ -43,7 +43,9 @@ export default function Example() {
 
   function handleUserSearch(event: any) {
     event.preventDefault();
-    window.location.href = `/perfil/${selectedUser.id}`;
+    if (selectedUser.id) {
+      window.location.href = `/perfil/${selectedUser.id}`;
+    }
   }
 
   useEffect(() => {
@@ -99,7 +101,7 @@ export default function Example() {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex gap-5 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <form onSubmit={handleUserSearch} className='relative'>
                   <Combobox
                       value={selectedUser}
@@ -107,7 +109,8 @@ export default function Example() {
                       name="searchUsers">
                     <Combobox.Input className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium"
                                     onChange={(event) => setQuery(event.target.value)}
-                                    displayValue={(user: any) => user.name} />
+                                    displayValue={(user: any) => user.name}
+                                    placeholder='Porcure por usuários...' />
                     <Combobox.Options className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium absolute z-10">
                       {
                         filteredUsers.map((user: any) => (
@@ -117,14 +120,20 @@ export default function Example() {
                                 className="h-8 w-8 rounded-full"
                                 src={ user.image || "user-profile-placeholder.jpg" }
                               />
-                              <span className="ml-3 block font-normal truncate">
-                                {user.name}
-                              </span>
+                              <div className='flex flex-col'>
+                                <span className="ml-3 block font-normal truncate">
+                                  {user.name}
+                                </span>
+                                <span className="ml-3 block font-normal truncate">
+                                  {user.email}
+                                </span>
+                              </div>
                             </div>
                           </Combobox.Option>
                         ))
                       }
                     </Combobox.Options>
+                    <button type="submit" className="absolute right-0 top-0 mt-3 mr-4"> <FaSearch className="text-white" /> </button>
                   </Combobox>
                 </form>
                   
