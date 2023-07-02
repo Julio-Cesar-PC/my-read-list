@@ -4,7 +4,7 @@ export default function followingsList({followings}: any) {
         followings.map((following: any) => (
           <a
           key={following.following.id}
-          className="flex flex-col items-center border shadow md:flex-row md:max-w-xl"
+          className="flex flex-col items-center shadow md:flex-row md:max-w-xl"
           title={following.following.name}
           href={`/perfil/${following.following.id}`}
         >

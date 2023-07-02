@@ -7,13 +7,16 @@ import FollowingList from "../../components/FollowingList";
 import FollowBtn from '../../components/FollowBtn';
 import UnfollowBtn from '../../components/UnfollowBtn';
 import ProfileBookList from '../../components/ProfileBookList';
+import { Modal } from 'flowbite-react';
  
 export default function Page() {
   const router = useRouter()
   const id = router.query.id
   const [user, setUser] = useState<any>({})
   const [followBtn, setFollowBtn] = useState<any>(false)
-  const [avaliacao, setAvaliacao] = useState<any>([])
+  const [allAvaliacao, setAllAvaliacao] = useState<any>([])
+  const [showModalSeguidores, setShowModalSeguidores] = useState(false);
+  const [showModalSeguindo, setShowModalSeguindo] = useState(false);
 
   async function getProfile() {
     const response = await axios.get(`/api/auth/getProfileByUserId?id=${id}`)
@@ -42,7 +45,7 @@ export default function Page() {
     await axios.get(`/api/avaliacao/getAllAvaliacaoById?id=${id}`)
     .then((response) => {
       if (response.data.length > 0) {
-        setAvaliacao(response.data)
+        setAllAvaliacao(response.data)
       }
     })
   }
@@ -56,7 +59,7 @@ export default function Page() {
 
   return (
     <Layout>
-      <div className="flex flex-col min-h-screen py-2">
+      <div className="flex flex-col py-2">
         <div className="mt-4 ml-11 mb-4 p-2 flex flex-col items-center justify-between rounded-lg shadow md:flex-row md:max-w-xl">
           <div className='flex'>
             <img
@@ -77,17 +80,39 @@ export default function Page() {
           </div>
         </div>
         <div className="mb-4 ml-11 flex gap-5">
-          <h1 className="mb-2">{avaliacao.length} livros avaliados</h1>
-          <h1 className="mb-2">{user?.followers?.length} seguidores</h1>
-          <div className="flex gap-4">
-            {/* <FollowersList followers={user?.followers} /> */}
-          </div>
-          <h1 className="mb-2">{user?.following?.length} seguindo</h1>
-          <div className="flex gap-4">
-            {/* <FollowingList followings={user?.following} /> */}
+        <h1 className="mb-2 btn btn-ghost">{allAvaliacao.length} livros avaliados</h1>
+          
+          <h1 onClick={() => setShowModalSeguidores(!showModalSeguidores)}
+              className="mb-2 btn btn-ghost">
+                {user?.followers?.length} seguidores
+          </h1>
+          <Modal show={showModalSeguidores}
+                 onClose={() => setShowModalSeguidores(!showModalSeguidores)} >
+            <Modal.Header>
+              <h2 className="text-xl font-bold">Seguidores</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <FollowersList followers={user?.followers} />
+            </Modal.Body>
+          </Modal>
+
+          <h1 onClick={() => setShowModalSeguindo(!showModalSeguindo)}
+              className="mb-2 btn btn-ghost">
+                {user?.following?.length} seguindo
+          </h1>
+          <Modal show={showModalSeguindo}
+                 onClose={() => setShowModalSeguindo(!showModalSeguindo)}>
+            <Modal.Header>
+              <h2 className="text-xl font-bold">Seguindo</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <FollowingList followings={user?.following} />
+            </Modal.Body>
+          </Modal>
           </div>
         </div>
-        <table className="text-sm text-left text-gray-500 mt-5">
+        <div className="divider">Availiações</div>
+        <table className="mx-auto">
                 <thead className="text-xs uppercase">
                   <tr>
                     <th scope="col" className="px-6 py-3">
@@ -108,10 +133,9 @@ export default function Page() {
                 </tr>
               </thead>
               <tbody>  
-                <ProfileBookList bookList={avaliacao} />
+                <ProfileBookList bookList={allAvaliacao} />
               </tbody>
           </table>
-      </div>
     </Layout>
   )
 }

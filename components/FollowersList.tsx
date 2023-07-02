@@ -6,7 +6,7 @@ export default function FollowersList({followers}: any) {
         followers.map((follower: any) => (
             <Link
               key={follower.follower.id}
-              className="flex flex-col items-center border shadow md:flex-row md:max-w-xl"
+              className="flex flex-col items-center shadow md:flex-row md:max-w-xl"
               title={follower.follower.name}
               href={`/perfil/${follower.follower.id}`}
             >

@@ -4,12 +4,16 @@ import FollowersList from "../components/FollowersList";
 import FollowingList from "../components/FollowingList";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Modal } from "flowbite-react";
 
 export default function MePage() {
   const { data: session, status } = useSession();
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [lastAvaliacao, setLastAvaliacao] = useState({});
+  const [allAvaliacao, setAllAvaliacao] = useState([]);
+  const [showModalSeguidores, setShowModalSeguidores] = useState(false);
+  const [showModalSeguindo, setShowModalSeguindo] = useState(false);
 
   async function getFollowers() {
     const response = await axios.get("/api/follows/getAllFollowers");
@@ -24,12 +28,19 @@ export default function MePage() {
   async function getLastAvaliacao() {
     const response = await axios.get("/api/avaliacao/getLastAvaliacaoBySession");
     setLastAvaliacao(response.data);
+    console.log(response.data)
+  }
+
+  async function getAllAvaliacaoBySession() {
+    const response = await axios.get("/api/avaliacao/getAllAvaliacaoBySession");
+    setAllAvaliacao(response.data);
   }
 
   useEffect(() => {
     getFollowers();
     getFollowing();
     getLastAvaliacao();
+    getAllAvaliacaoBySession();
   }, [session]);
 
   return (
@@ -48,18 +59,41 @@ export default function MePage() {
             <p className="mb-3 font-normal">
               {session?.user?.email}
             </p>
+            {/* <p className="mb-3 font-normal">
+              Ultima avaliação: {lastAvaliacao?.Livros?.titulo}
+            </p> */}
           </div>
         </div>
         <div className="mb-4 ml-11 flex gap-5">
-          <h1 className="mb-2"> livros avaliados</h1>
-          <h1 className="mb-2">{followers.length} seguidores</h1>
-          <div className="flex gap-4">
-            <FollowersList followers={followers} />
-          </div>
-          <h1 className="mb-2">{following.length} seguindo</h1>
-          <div className="flex gap-4">
-            <FollowingList followings={following} />
-          </div>
+          <a href="/minha-lista" className="mb-2 btn btn-ghost">{allAvaliacao.length} livros avaliados</a>
+          
+          <h1 onClick={() => setShowModalSeguidores(!showModalSeguidores)}
+              className="mb-2 btn btn-ghost">
+                {followers.length} seguidores
+          </h1>
+          <Modal show={showModalSeguidores}
+                 onClose={() => setShowModalSeguidores(!showModalSeguidores)} >
+            <Modal.Header>
+              <h2 className="text-xl font-bold">Seguidores</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <FollowersList followers={followers} />
+            </Modal.Body>
+          </Modal>
+
+          <h1 onClick={() => setShowModalSeguindo(!showModalSeguindo)}
+              className="mb-2 btn btn-ghost">
+                {following.length} seguindo
+          </h1>
+          <Modal show={showModalSeguindo}
+                 onClose={() => setShowModalSeguindo(!showModalSeguindo)}>
+            <Modal.Header>
+              <h2 className="text-xl font-bold">Seguindo</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <FollowingList followings={following} />
+            </Modal.Body>
+          </Modal>
         </div>
       </div>
     </Layout>

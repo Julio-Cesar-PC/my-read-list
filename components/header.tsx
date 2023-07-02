@@ -8,6 +8,7 @@ import SwitchTheme from './SwitchTheme';
 import { Combobox } from '@headlessui/react';
 import { FaSearch } from 'react-icons/fa';
 import axios from 'axios';
+import Image from 'next/image';
 
 
 const navigation = [
@@ -23,13 +24,13 @@ function classNames(...classes : any[]) {
 export default function Example() {
   const { data: session } = useSession();
   const [ users, setAllUsers ] = useState([] as any);
-  const [ selectedUser, setSelectedUser ] = useState<any>(users[0]);
+  const [ selectedUser, setSelectedUser ] = useState<any>([]);
   const [query, setQuery] = useState('')
 
   const filteredUsers =
     query === ''
       ? users
-      : users.filter((user) => {
+      : users.filter((user: any) => {
           return user.name.toLowerCase().includes(query.toLowerCase())
         })
 
@@ -38,7 +39,11 @@ export default function Example() {
     .then((res) => {
       setAllUsers(res.data);
     });
-    
+  }
+
+  function handleUserSearch(event: any) {
+    event.preventDefault();
+    window.location.href = `/perfil/${selectedUser.id}`;
   }
 
   useEffect(() => {
@@ -66,12 +71,12 @@ export default function Example() {
                 <div className="flex flex-shrink-0 items-center">
                   <img
                     className="block h-12 w-auto lg:hidden"
-                    src="logo.png"
+                    src="/logo.png"
                     alt="Your Company"
                   />
                   <img
                     className="hidden h-16 w-auto lg:block mr-3"
-                    src="logo.png"
+                    src="/logo.png"
                     alt="Your Company"
                   />
                   <h3 className="hidden h-12 mt-4 w-auto lg:block text-white">My Read List</h3>
@@ -95,30 +100,33 @@ export default function Example() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Combobox
-                    value={selectedUser}
-                    onChange={setSelectedUser}
-                    name="searchUsers">
-                  <Combobox.Input className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium" />
-                  <Combobox.Options className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium">
-                    {
-                      filteredUsers.map((user) => (
-                        <Combobox.Option key={user.id} value={user} className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium">
-                          <div className="flex items-center">
-                            <img
-                              className="h-8 w-8 rounded-full"
-                              src={ user.image || "user-profile-placeholder.jpg" }
-                            />
-                            <span className="ml-3 block font-normal truncate">
-                              {user.name}
-                            </span>
-                          </div>
-                        </Combobox.Option>
-                      ))
-                    }
-                  </Combobox.Options>
-
-                </Combobox>
+                <form onSubmit={handleUserSearch} className='relative'>
+                  <Combobox
+                      value={selectedUser}
+                      onChange={setSelectedUser}
+                      name="searchUsers">
+                    <Combobox.Input className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium"
+                                    onChange={(event) => setQuery(event.target.value)}
+                                    displayValue={(user: any) => user.name} />
+                    <Combobox.Options className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium absolute z-10">
+                      {
+                        filteredUsers.map((user: any) => (
+                          <Combobox.Option key={user.id} value={user} className="bg-primaryDark rounded-md px-3 py-2 text-sm font-medium hover:bg-primary">
+                            <div className="flex items-center">
+                              <img
+                                className="h-8 w-8 rounded-full"
+                                src={ user.image || "user-profile-placeholder.jpg" }
+                              />
+                              <span className="ml-3 block font-normal truncate">
+                                {user.name}
+                              </span>
+                            </div>
+                          </Combobox.Option>
+                        ))
+                      }
+                    </Combobox.Options>
+                  </Combobox>
+                </form>
                   
                 {/* Profile dropdown */}
                 {/* Check if logged */}
@@ -149,7 +157,7 @@ export default function Example() {
                             href="/me"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
-                            Your Profile
+                            Perfil
                           </Link>
                         )}
                       </Menu.Item>
@@ -162,7 +170,7 @@ export default function Example() {
                             }) }}
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
-                            Sign out
+                            Sair
                           </Link>
                         )}
                       </Menu.Item>
