@@ -57,8 +57,16 @@ function BookList({ books }: any) {
       }
       axios.post("/api/avaliacao/createAvaliacao", avaliacao)
       .then(response => {
-        setIsOpen(false)
-        setBtnAddList(false)
+        Swal.fire({
+          title: "Sucesso!",
+          text: "Você avaliou este livro!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          setIsOpen(false)
+          setBtnAddList(false)
+        });
       }).catch(error => {
         Swal.fire({
           title: "Erro!",
@@ -66,10 +74,23 @@ function BookList({ books }: any) {
           icon: "error",
           showConfirmButton: false,
           timer: 2000,
+        }).then(() => {
+          setIsOpen(false)
+          setBtnAddList(false)
         });
+        
+      })
+    }).catch(error => {
+      Swal.fire({
+        title: "Erro!",
+        text: "Você não está logado!",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
         setIsOpen(false)
         setBtnAddList(false)
-      })
+      });
     })
   }
 
