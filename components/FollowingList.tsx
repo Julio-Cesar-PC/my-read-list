@@ -1,8 +1,10 @@
+import Link from 'next/link'
+
 export default function followingsList({followings}: any) {
   if (followings != undefined) {
     return (
         followings.map((following: any) => (
-          <a
+          <Link
           key={following.following.id}
           className="flex flex-col items-center shadow md:flex-row md:max-w-xl"
           title={following.following.name}
@@ -13,7 +15,7 @@ export default function followingsList({followings}: any) {
               <img src={following.following.image} />
             </div>
           </div>
-        </a>
+        </Link>
         ))
     )
   } else {

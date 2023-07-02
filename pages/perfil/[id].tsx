@@ -54,6 +54,8 @@ export default function Page() {
     getProfile()
     checkFollow()
     getAllAvaliacao()
+    setShowModalSeguidores(false)
+    setShowModalSeguindo(false)
   }, [id])
   
 
